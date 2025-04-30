@@ -25,16 +25,13 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { NavItem } from "@/types/sidebar";
 
-export function NavDocuments({
-  items,
-}: {
-  items: {
-    name: string;
-    url: string;
-    icon: Icon;
-  }[];
-}) {
+interface NavDocuments {
+  items: NavItem[];
+}
+
+const NavDocuments: React.FC<NavDocuments> = ({ items }) => {
   const { isMobile } = useSidebar();
 
   return (
@@ -42,11 +39,11 @@ export function NavDocuments({
       <SidebarGroupLabel>Documents</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
-          <SidebarMenuItem key={item.name}>
+          <SidebarMenuItem key={item.title}>
             <SidebarMenuButton asChild>
               <Link href={item.url}>
-                <item.icon />
-                <span>{item.name}</span>
+                {item.icon && <item.icon />}
+                <span>{item.title}</span>
               </Link>
             </SidebarMenuButton>
             <DropdownMenu>
@@ -90,4 +87,6 @@ export function NavDocuments({
       </SidebarMenu>
     </SidebarGroup>
   );
-}
+};
+
+export default NavDocuments;

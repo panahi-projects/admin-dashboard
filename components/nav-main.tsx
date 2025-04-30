@@ -8,19 +8,17 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils"; // Assuming you're using class-variance-authority or similar
+import { NavItem } from "@/types/sidebar";
 import { type Icon } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import React from "react";
 
-export function NavMain({
-  items,
-}: {
-  items: {
-    title: string;
-    url: string;
-    icon?: Icon;
-  }[];
-}) {
+interface NavMainProps {
+  items: NavItem[];
+}
+
+const NavMain: React.FC<NavMainProps> = ({ items }) => {
   const pathname = usePathname();
 
   return (
@@ -54,4 +52,6 @@ export function NavMain({
       </SidebarGroupContent>
     </SidebarGroup>
   );
-}
+};
+
+export default NavMain;
