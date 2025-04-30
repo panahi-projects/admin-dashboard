@@ -12,6 +12,7 @@ import {
   IconSettings,
   IconUsers,
 } from "@tabler/icons-react";
+import globalConfigs from "./global";
 
 const sidebarConfigs: SidebarConfigs = {
   user: {
@@ -81,6 +82,9 @@ const sidebarConfigs: SidebarConfigs = {
         icon: IconFileWord,
       },
     ],
+  },
+  sidebarDetails: {
+    collapsible: globalConfigs.sidebar?.collapsible,
   },
 };
 

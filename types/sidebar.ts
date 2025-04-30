@@ -1,5 +1,5 @@
 import { IconProps } from "@tabler/icons-react";
-import { EmailString, RelativeUrl } from "./global";
+import { EmailString, RelativeUrl, Sidebar } from "./global";
 
 export type NavItem = {
   title: string;
@@ -16,4 +16,5 @@ export interface SidebarUser {
 export interface SidebarConfigs {
   user: SidebarUser;
   navItems: Record<NavKeys, NavItem[]>;
+  sidebarDetails?: Sidebar;
 }

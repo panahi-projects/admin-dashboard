@@ -18,10 +18,11 @@ import {
 } from "@/components/ui/sidebar";
 
 import sidebarData from "@/configs/sidebar";
+import globalConfigs from "@/configs/global";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible={sidebarData.sidebarDetails?.collapsible} {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -31,7 +32,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <span className="text-base font-semibold">
+                  {globalConfigs.main?.title}
+                </span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
