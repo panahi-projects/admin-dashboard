@@ -18,7 +18,7 @@ const sidebarConfigs: SidebarConfigs = {
   user: {
     name: "shadcn",
     email: "m@example.com",
-    avatar: "/images/avatar.jpg",
+    avatar: "/assets/images/avatar.jpg",
   },
   navItems: {
     navMain: [

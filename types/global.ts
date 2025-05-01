@@ -12,9 +12,18 @@ export interface Sidebar {
 }
 export interface GlobalConfigs {
   main: {
-    title: string;
-    logoUrl?: RelativeUrl;
+    appName: string;
+    appDescription: string;
+    appVersion: string;
+    logo?: RelativeUrl;
     logoIcon?: React.ForwardRefExoticComponent<IconProps>;
+    logoDark?: RelativeUrl;
+    favIcon?: RelativeUrl;
+    appUrl?: UrlString;
+    title: string;
+    description: string;
+    titleTemplate: string;
+    keywords?: string[];
   };
   sidebar?: Sidebar;
 }
