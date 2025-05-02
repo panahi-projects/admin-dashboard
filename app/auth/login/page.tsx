@@ -1,4 +1,4 @@
-import LoginForm from "@/components/auth/LoginForm";
+import LoginForm from "@/components/auth/login-form";
 import globalConfigs from "@/configs/global";
 import { GalleryVerticalEnd } from "lucide-react";
 

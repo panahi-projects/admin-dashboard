@@ -1,15 +1,19 @@
 import { IconProps } from "@tabler/icons-react";
+import { Sidebar } from "./sidebar";
 
 export type AbsoluteUrl = `http${"s" | ""}://${string}`;
 export type RelativeUrl = `/${string}`;
 export type UrlString = AbsoluteUrl | RelativeUrl;
 export type EmailString = `${string}@${string}.${string}`;
+export type PhoneString = `+${string}` | `0${string}`;
+export type DateString =
+  | `${number}-${number}-${number}`
+  | `${number}/${number}/${number}`;
+export type DateTimeString = `${DateString} ${number}:${number}:${number}`;
+export type TimeString =
+  | `${number}:${number}:${number}`
+  | `${number}:${number}`;
 
-export interface Sidebar {
-  side?: "left" | "right";
-  variant?: "sidebar" | "floating" | "inset";
-  collapsible?: "offcanvas" | "icon" | "none";
-}
 export interface GlobalConfigs {
   main: {
     appName: string;
@@ -27,3 +31,8 @@ export interface GlobalConfigs {
   };
   sidebar?: Sidebar;
 }
+
+export type RequestInterceptor = (
+  url: string,
+  config: RequestInit
+) => { url: string; config: RequestInit };
