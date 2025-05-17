@@ -5,7 +5,6 @@ import {
   IconFolder,
   IconShare3,
   IconTrash,
-  type Icon,
 } from "@tabler/icons-react";
 
 import {
@@ -24,8 +23,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { NavItem } from "@/types";
 import Link from "next/link";
-import { NavItem } from "@/types/sidebar";
 
 interface NavDocuments {
   items: NavItem[];

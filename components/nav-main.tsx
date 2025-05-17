@@ -8,8 +8,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils"; // Assuming you're using class-variance-authority or similar
-import { NavItem } from "@/types/sidebar";
-import { type Icon } from "@tabler/icons-react";
+import { NavItem } from "@/types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";

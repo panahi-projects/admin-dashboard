@@ -16,7 +16,8 @@ export interface Sidebar {
 export type NavKeys = "navMain" | "navSecondary" | "navDocuments";
 export interface SidebarUser {
   name: string;
-  email: EmailString;
+  username: string;
+  email?: EmailString;
   avatar?: string;
 }
 

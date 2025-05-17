@@ -24,7 +24,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { SidebarUser } from "@/types/sidebar";
+import { SidebarUser } from "@/types";
 
 interface NavUserProps {
   user: SidebarUser;
@@ -49,7 +49,7 @@ const NavUser: React.FC<NavUserProps> = ({ user }) => {
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
                 <span className="text-muted-foreground truncate text-xs">
-                  {user.email}
+                  {user.username}
                 </span>
               </div>
               <IconDotsVertical className="ml-auto size-4" />
@@ -70,7 +70,7 @@ const NavUser: React.FC<NavUserProps> = ({ user }) => {
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
                   <span className="text-muted-foreground truncate text-xs">
-                    {user.email}
+                    {user.username}
                   </span>
                 </div>
               </div>

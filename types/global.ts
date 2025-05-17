@@ -31,8 +31,3 @@ export interface GlobalConfigs {
   };
   sidebar?: Sidebar;
 }
-
-export type RequestInterceptor = (
-  url: string,
-  config: RequestInit
-) => { url: string; config: RequestInit };

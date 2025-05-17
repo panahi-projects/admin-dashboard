@@ -1,4 +1,4 @@
-import { GlobalConfigs } from "@/types/global";
+import { GlobalConfigs } from "@/types";
 
 const globalConfigs: GlobalConfigs = {
   main: {

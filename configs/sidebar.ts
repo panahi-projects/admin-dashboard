@@ -1,4 +1,4 @@
-import { SidebarConfigs } from "@/types/sidebar";
+import { SidebarConfigs } from "@/types";
 import {
   IconChartBar,
   IconDashboard,
@@ -17,6 +17,7 @@ import globalConfigs from "./global";
 const sidebarConfigs: SidebarConfigs = {
   user: {
     name: "shadcn",
+    username: "m@example.com",
     email: "m@example.com",
     avatar: "/assets/images/avatar.jpg",
   },

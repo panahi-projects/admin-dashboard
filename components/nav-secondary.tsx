@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { type Icon } from "@tabler/icons-react";
 
 import {
   SidebarGroup,
@@ -10,7 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { NavItem } from "@/types/sidebar";
+import { NavItem } from "@/types";
 
 interface NavSecondaryProps extends React.ComponentPropsWithoutRef<"div"> {
   items: NavItem[];
