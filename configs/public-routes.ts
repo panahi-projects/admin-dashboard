@@ -14,9 +14,4 @@ export const publicRoutes = [
     name: "Contact",
     aliases: ["/contact-us"],
   },
-  // {
-  //   path: "/dashboard",
-  //   name: "Dashboard",
-  //   aliases: [],
-  // },
 ];
