@@ -2,7 +2,7 @@ import { handleAliasRoutes } from "@/middlewares/alias-route-handler";
 import { handleProtectedRoutes } from "@/middlewares/protect-route-handler";
 import { NextRequest, NextResponse } from "next/server";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   // 1. First handle alias routes
   const aliasResponse: NextResponse<unknown> | undefined =
     handleAliasRoutes(request);
@@ -27,6 +27,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - images - .svg, .png, .jpg, etc.
      */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

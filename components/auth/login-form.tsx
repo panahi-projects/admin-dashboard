@@ -1,14 +1,47 @@
-import { cn } from "@/lib/utils";
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import api from "@/lib/api-factory";
+import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/stores/auth-store";
+import { AuthState, User } from "@/types";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const LoginForm = ({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const { login } = useAuthStore();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Submitting form", { username, password });
+    setError("");
+
+    const { data } = await api.post<User>("/auth/login", {
+      username,
+      email: username,
+      password,
+    });
+
+    if (data) {
+      console.log("Login successful", data);
+    }
+  };
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form
+      onSubmit={handleSubmit}
+      className={cn("flex flex-col gap-6", className)}
+      {...props}
+    >
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Login to your account</h1>
         <p className="text-balance text-sm text-muted-foreground">
@@ -23,6 +56,9 @@ const LoginForm = ({
             type="username"
             placeholder="m@example.com"
             required
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            autoComplete="off"
           />
         </div>
         <div className="grid gap-2">
@@ -35,7 +71,14 @@ const LoginForm = ({
               Forgot your password?
             </a>
           </div>
-          <Input id="password" type="password" required />
+          <Input
+            id="password"
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="off"
+          />
         </div>
         <Button type="submit" className="w-full">
           Login

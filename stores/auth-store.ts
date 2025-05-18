@@ -1,49 +1,30 @@
-// ./stores/auth-store.tsx
+// @/stores/auth-store.ts
+import { AuthActions, AuthState, User } from "@/types";
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
-
-type AuthState = {
-  token: string | null;
-  refreshToken: string | null | undefined;
-  user: any | null;
-  isAuthenticated: boolean;
-  error: string | null;
-  isLoading: boolean;
-};
-
-type AuthActions = {
-  setAuth: (token: string, refreshToken: string, user: any) => void;
-  setToken: (token: string) => void;
-  setUser: (user: any) => void;
-  clearAuth: () => void;
-  setLoading: (isLoading: boolean) => void;
-  setError: (error: string | null) => void;
-};
+import { persist } from "zustand/middleware";
 
 const initialState: AuthState = {
-  isAuthenticated: false,
   user: null,
   token: null,
-  refreshToken: null,
+  isAuthenticated: false,
+  loading: false,
   error: null,
-  isLoading: false,
 };
 
 export const useAuthStore = create<AuthState & AuthActions>()(
   persist(
     (set) => ({
       ...initialState,
-      setAuth: (token, refreshToken, user) =>
-        set({ token, refreshToken, user, isAuthenticated: true }),
-      setToken: (token) => set({ token }),
-      setUser: (user) => set({ user }),
-      clearAuth: () => set(initialState),
-      setLoading: (isLoading) => set({ isLoading }),
-      setError: (error) => set({ error }),
+      login: (token: string, user: User) =>
+        set({ token, user, isAuthenticated: true }),
+      logout: () => set({ ...initialState }),
+      setLoading: (loading: boolean) => set({ loading }),
+      setError: (error: string | null) => set({ error }),
+      setUser: (user: User) => set({ user }),
+      setToken: (token: string) => set({ token }),
     }),
     {
       name: "auth-storage",
-      storage: createJSONStorage(() => sessionStorage), // Use sessionStorage instead of localStorage
     }
   )
 );
