@@ -57,37 +57,6 @@ const createApiFactory = ({
       }
       return config;
     });
-
-    // instance.interceptors.response.use(
-    //   (response) => response,
-    //   async (error: AxiosError) => {
-    //     const originalRequest = error.config;
-    //     const authStore = useAuthStore.getState();
-
-    //     if (
-    //       error.response?.status === 401 &&
-    //       originalRequest &&
-    //       !originalRequest._retry &&
-    //       authStore.token
-    //     ) {
-    //       originalRequest._retry = true;
-    //       try {
-    //         // Attempt to refresh token
-    //         const { data } = await axios.post("/api/auth/refresh", null, {
-    //           withCredentials: true,
-    //         });
-    //         authStore.login(data.token, data.user);
-    //         originalRequest.headers.Authorization = `Bearer ${data.token}`;
-    //         return instance(originalRequest);
-    //       } catch (refreshError) {
-    //         authStore.logout();
-    //         window.location.href = "/auth/login";
-    //         return Promise.reject(refreshError);
-    //       }
-    //     }
-    //     return Promise.reject(error);
-    //   }
-    // );
   }
 
   return {

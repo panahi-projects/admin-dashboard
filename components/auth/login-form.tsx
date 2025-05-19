@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import api from "@/lib/api-factory";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth-store";
-import { AuthState, User } from "@/types";
+import { User } from "@/types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -17,22 +17,28 @@ const LoginForm = ({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const { login } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitting form", { username, password });
     setError("");
 
-    const { data } = await api.post<User>("/auth/login", {
-      username,
-      email: username,
-      password,
-    });
+    try {
+      const { status, data } = await api.post<{ user: User }>("/auth/login", {
+        username,
+        email: username,
+        password,
+      });
 
-    if (data) {
-      console.log("Login successful", data);
+      if (status === 200 && data?.user) {
+        // ✅ No token here - trust it's set in cookie
+        login("", data.user); // We pass empty string for token, since it's in cookie
+        router.push("/dashboard"); // or your protected route
+      }
+    } catch (error: any) {
+      setError(error?.response?.data?.error || "Login failed");
     }
   };
 

@@ -20,6 +20,7 @@ export type AuthActions = {
   setError: (error: string | null) => void;
   setUser: (user: User) => void;
   validateToken?: () => boolean;
+  verifyToken: () => Promise<void>;
 };
 
 export type AuthResponse = {

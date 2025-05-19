@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
 
   // 2. Then handle protected routes
   const protectedResponse: NextResponse<unknown> | null =
-    handleProtectedRoutes(request);
+    await handleProtectedRoutes(request);
   if (protectedResponse) return protectedResponse;
 
   // 3. Continue if no redirects needed

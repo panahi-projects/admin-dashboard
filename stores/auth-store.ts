@@ -1,4 +1,5 @@
 // @/stores/auth-store.ts
+import api from "@/lib/api-factory";
 import { AuthActions, AuthState, User } from "@/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -22,6 +23,18 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       setError: (error: string | null) => set({ error }),
       setUser: (user: User) => set({ user }),
       setToken: (token: string) => set({ token }),
+      verifyToken: async () => {
+        try {
+          const res = await api.get<AuthState>("/auth/me"); // or `/auth/verify`
+          set({
+            isAuthenticated: true,
+            user: res.data.user,
+            loading: false,
+          });
+        } catch (err) {
+          set({ isAuthenticated: false, user: null, loading: false });
+        }
+      },
     }),
     {
       name: "auth-storage",
