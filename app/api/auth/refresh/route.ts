@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { findUserById, generateTokens } from "@/lib/auth-utils";
+import { extractNumber } from "@/utils";
 
 export async function POST() {
   try {
@@ -34,6 +35,10 @@ export async function POST() {
       token: accessToken,
       user,
     });
+
+    const AccessTokenExpiresIn: number = extractNumber(
+      process.env.ACCESS_TOKEN_EXPIRES_IN || "15m"
+    );
 
     response.cookies.set("accessToken", accessToken, {
       httpOnly: true,
