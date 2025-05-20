@@ -37,8 +37,15 @@ const LoginForm = ({
         login("", data.user); // We pass empty string for token, since it's in cookie
         router.push("/dashboard"); // or your protected route
       }
-    } catch (error: any) {
-      setError(error?.response?.data?.error || "Login failed");
+    } catch (error: unknown) {
+      // Type-safe error handling
+      if (api.isError(error)) {
+        setError(error.response?.data?.error || "Login failed");
+      } else if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Login failed");
+      }
     }
   };
 
@@ -54,6 +61,14 @@ const LoginForm = ({
           Enter your username below to login to your account
         </p>
       </div>
+
+      {/* Add error display */}
+      {error && (
+        <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">
+          {error}
+        </div>
+      )}
+
       <div className="grid gap-6">
         <div className="grid gap-2">
           <Label htmlFor="username">Username</Label>

@@ -1,18 +1,12 @@
 // @/lib/api-factory.ts
-import axios, {
-  AxiosInstance,
-  InternalAxiosRequestConfig,
-  AxiosError,
-  AxiosResponse,
-} from "axios";
 import { useAuthStore } from "@/stores/auth-store";
-
-// Extend the Axios config to include _retry
-declare module "axios" {
-  interface InternalAxiosRequestConfig<D> {
-    _retry?: boolean;
-  }
-}
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+  isAxiosError,
+} from "axios";
 
 type ApiFactoryOptions = {
   baseURL?: string;
@@ -38,6 +32,7 @@ export type ApiInstance = {
     url: string,
     config?: InternalAxiosRequestConfig
   ) => Promise<AxiosResponse<T>>;
+  isError: (error: unknown) => error is AxiosError;
 };
 
 const createApiFactory = ({
@@ -74,6 +69,7 @@ const createApiFactory = ({
     ) => instance.put<T>(url, data, config),
     delete: <T>(url: string, config?: InternalAxiosRequestConfig) =>
       instance.delete<T>(url, config),
+    isError: isAxiosError,
   };
 };
 

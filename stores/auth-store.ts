@@ -26,6 +26,11 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       verifyToken: async () => {
         try {
           const res = await api.get<AuthState>("/auth/me"); // or `/auth/verify`
+          console.log("Token verification response:", res);
+          if (res.status !== 200) {
+            set({ isAuthenticated: false, user: null, loading: false });
+            return;
+          }
           set({
             isAuthenticated: true,
             user: res.data.user,

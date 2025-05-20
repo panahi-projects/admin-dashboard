@@ -29,10 +29,10 @@ export async function POST() {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const { accessToken } = generateTokens(user);
+    const { accessToken, refreshToken: newRefreshToken } = generateTokens(user);
 
     const response = NextResponse.json({
-      token: accessToken,
+      accessToken,
       user,
     });
 
@@ -47,6 +47,17 @@ export async function POST() {
       maxAge: 60 * AccessTokenExpiresIn,
       path: "/",
     });
+
+    // Optionally rotate refresh token
+    if (newRefreshToken) {
+      response.cookies.set("refreshToken", newRefreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+        path: "/",
+      });
+    }
 
     return response;
   } catch (error) {

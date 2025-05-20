@@ -25,6 +25,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { SidebarUser } from "@/types";
+import LogoutButton from "./auth/logout-button";
 
 interface NavUserProps {
   user: SidebarUser;
@@ -92,8 +93,7 @@ const NavUser: React.FC<NavUserProps> = ({ user }) => {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <IconLogout />
-              Log out
+              <LogoutButton />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -9,18 +9,24 @@ type UserData = {
   email: string;
   role?: string;
 };
-
+type TokenExpiryFormat = `${number}${"s" | "m" | "h" | "d"}`; // e.g., "15m", "1h", "2d"
 export const generateTokens = (user: UserData) => {
+  // Explicitly type the expiresIn values as strings
+  const AccessTokenExpiresIn: TokenExpiryFormat =
+    (process.env.ACCESS_TOKEN_EXPIRES_IN as TokenExpiryFormat) || "15m";
+  const RefreshTokenExpiresIn: TokenExpiryFormat =
+    (process.env.REFRESH_TOKEN_EXPIRES_IN as TokenExpiryFormat) || "7d";
+
   const accessToken = jwt.sign(
     { userId: user.id, email: user.email },
     process.env.JWT_ACCESS_SECRET!,
-    { expiresIn: "15m" }
+    { expiresIn: AccessTokenExpiresIn }
   );
 
   const refreshToken = jwt.sign(
     { userId: user.id },
     process.env.JWT_REFRESH_SECRET!,
-    { expiresIn: "7d" }
+    { expiresIn: RefreshTokenExpiresIn }
   );
 
   return { accessToken, refreshToken };
@@ -36,16 +42,4 @@ export const findUserById = async (id: string): Promise<UserData | null> => {
     email: user.email,
     role: user.role,
   };
-};
-
-export const isTokenValid = (token: string) => {
-  try {
-    const decoded: any = jwt.decode(token);
-    if (!decoded || !decoded.exp) return false; // Token is invalid
-
-    const now = Math.floor(Date.now() / 1000);
-    return decoded.exp > now; // Token is valid
-  } catch {
-    return false; // Token is invalid
-  }
 };

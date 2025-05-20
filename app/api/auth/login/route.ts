@@ -1,11 +1,10 @@
 // Example for login route
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { LoginSchema } from "@/validations/auth-schema";
-import User from "@/models/User";
 import { generateTokens } from "@/lib/auth-utils";
 import dbConnect from "@/lib/db-connect";
+import User from "@/models/User";
 import { extractNumber } from "@/utils";
+import { LoginSchema } from "@/validations/auth-schema";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   await dbConnect();
