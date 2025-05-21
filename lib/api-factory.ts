@@ -44,6 +44,38 @@ const createApiFactory = ({
     withCredentials: true,
   });
 
+  instance.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const originalRequest = error.config;
+
+      // If error is 401 and we haven't already retried
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+
+        try {
+          // Attempt to refresh token
+          await axios.post(
+            "/api/auth/refresh",
+            {},
+            {
+              withCredentials: true,
+            }
+          );
+
+          // Retry original request with new token
+          return instance(originalRequest);
+        } catch (refreshError) {
+          // If refresh fails, clear auth state
+          useAuthStore.getState().logout();
+          return Promise.reject(refreshError);
+        }
+      }
+
+      return Promise.reject(error);
+    }
+  );
+
   if (secure) {
     instance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
       const token = useAuthStore.getState().token;

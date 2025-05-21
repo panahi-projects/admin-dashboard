@@ -6,6 +6,9 @@ import { findUserById, generateTokens } from "@/lib/auth-utils";
 import { extractNumber } from "@/utils";
 
 export async function POST() {
+  debugger;
+  console.log("Attempting to refresh token...");
+
   try {
     const cookieStore = await cookies();
     const refreshToken = cookieStore.get("refreshToken")?.value;
@@ -17,6 +20,7 @@ export async function POST() {
       );
     }
 
+    // Verify the refresh token
     const decoded = jwt.verify(
       refreshToken,
       process.env.JWT_REFRESH_SECRET!
@@ -24,6 +28,7 @@ export async function POST() {
       userId: string;
     };
 
+    // Generate new tokens
     const user = await findUserById(decoded.userId);
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });

@@ -1,5 +1,5 @@
 import { publicRoutes } from "@/configs/public-routes";
-import { isTokenValid } from "@/utils";
+import { extractNumber, isTokenValid } from "@/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 const publicPaths = publicRoutes.map((route) => route.path);
@@ -10,8 +10,38 @@ export const handleProtectedRoutes = async (request: NextRequest) => {
   const refreshToken = request.cookies.get("refreshToken")?.value;
   const isAuthenticated = accessToken && isTokenValid(accessToken);
 
+  if (pathname.startsWith("/api/auth")) {
+    // Allow auth-related API endpoints
+    return null;
+  }
+
   // 🛑 Skip middleware for API routes
   if (pathname.startsWith("/api")) {
+    if (!isAuthenticated && refreshToken) {
+      try {
+        const refreshResponse = await attemptTokenRefresh(
+          request,
+          refreshToken
+        );
+        if (refreshResponse) return refreshResponse;
+      } catch (error) {
+        console.error("Token refresh failed:", error);
+        // Clear cookies and redirect if refresh fails
+        const res = NextResponse.json(
+          { error: "Authentication required" },
+          { status: 401 }
+        );
+        res.cookies.delete("accessToken");
+        res.cookies.delete("refreshToken");
+        return res;
+      }
+    }
+    if (!isAuthenticated) {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
+    }
     return null;
   }
 
@@ -28,6 +58,8 @@ export const handleProtectedRoutes = async (request: NextRequest) => {
 
   // Token refresh logic
   if (!isAuthenticated && refreshToken) {
+    console.log("+++ Attempting to refresh token...");
+
     try {
       const refreshResponse = await attemptTokenRefresh(request, refreshToken);
       if (refreshResponse) return refreshResponse;
@@ -64,12 +96,16 @@ async function attemptTokenRefresh(request: NextRequest, refreshToken: string) {
     const { accessToken } = await response.json();
     const res = NextResponse.next();
 
+    const AccessTokenExpiresIn: number = extractNumber(
+      process.env.ACCESS_TOKEN_EXPIRES_IN || "15m"
+    );
+
     res.cookies.set("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 15, // 15 minutes
+      maxAge: 60 * AccessTokenExpiresIn,
     });
 
     return res;

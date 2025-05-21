@@ -21,9 +21,11 @@ export type AuthActions = {
   setUser: (user: User) => void;
   validateToken?: () => boolean;
   verifyToken: () => Promise<void>;
+  refreshToken: () => Promise<void>;
 };
 
-export type AuthResponse = {
+export type AuthResponse<
+  K extends "accessToken" | "refreshToken" = "accessToken",
+> = {
   user: User;
-  token: string;
-};
+} & Record<K, string>;

@@ -1,14 +1,15 @@
-import api from "@/lib/api-factory";
 import { useAuthStore } from "@/stores/auth-store";
 import { IconLogout } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 
 const LogoutButton = () => {
+  const router = useRouter();
   const { logout } = useAuthStore();
 
   const onLogout = async () => {
     try {
-      await api.post("/auth/logout");
-      logout();
+      await logout();
+      router.replace("/auth/login");
     } catch (error) {
       console.error("Logout failed:", error);
     }
