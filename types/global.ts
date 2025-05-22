@@ -31,3 +31,6 @@ export interface GlobalConfigs {
   };
   sidebar?: Sidebar;
 }
+export interface ApiErrorResponse {
+  error: string;
+}

@@ -1,9 +1,9 @@
 // @/app/api/auth/refresh/route.ts
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { findUserById } from "@/lib/auth-db-utils";
+import { generateTokens, getTokenExpiry } from "@/lib/auth-utils";
 import jwt from "jsonwebtoken";
-import { findUserById, generateTokens } from "@/lib/auth-utils";
-import { extractNumber } from "@/utils";
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 export async function POST() {
   debugger;
@@ -20,13 +20,23 @@ export async function POST() {
       );
     }
 
-    // Verify the refresh token
+    // Verify and decode the refresh token
     const decoded = jwt.verify(
       refreshToken,
       process.env.JWT_REFRESH_SECRET!
     ) as {
       userId: string;
+      exp: number; // This is expiration timestamp
     };
+
+    // Check if refresh token has expired
+    const now = Math.floor(Date.now() / 1000);
+    if (decoded.exp < now) {
+      return NextResponse.json(
+        { error: "Refresh token expired" },
+        { status: 401 }
+      );
+    }
 
     // Generate new tokens
     const user = await findUserById(decoded.userId);
@@ -41,15 +51,11 @@ export async function POST() {
       user,
     });
 
-    const AccessTokenExpiresIn: number = extractNumber(
-      process.env.ACCESS_TOKEN_EXPIRES_IN || "15m"
-    );
-
     response.cookies.set("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 60 * AccessTokenExpiresIn,
+      maxAge: getTokenExpiry().accessTokenExpiry,
       path: "/",
     });
 
@@ -59,7 +65,7 @@ export async function POST() {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
-        maxAge: 60 * 60 * 24 * 7, // 7 days
+        maxAge: getTokenExpiry().refreshTokenExpiry,
         path: "/",
       });
     }

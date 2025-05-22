@@ -1,5 +1,5 @@
 import { publicRoutes } from "@/configs/public-routes";
-import { extractNumber, isTokenValid } from "@/utils";
+import { getTokenExpiry, isTokenValid } from "@/lib/auth-utils";
 import { NextRequest, NextResponse } from "next/server";
 
 const publicPaths = publicRoutes.map((route) => route.path);
@@ -96,16 +96,12 @@ async function attemptTokenRefresh(request: NextRequest, refreshToken: string) {
     const { accessToken } = await response.json();
     const res = NextResponse.next();
 
-    const AccessTokenExpiresIn: number = extractNumber(
-      process.env.ACCESS_TOKEN_EXPIRES_IN || "15m"
-    );
-
     res.cookies.set("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * AccessTokenExpiresIn,
+      maxAge: getTokenExpiry().accessTokenExpiry,
     });
 
     return res;

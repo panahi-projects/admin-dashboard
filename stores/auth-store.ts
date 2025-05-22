@@ -1,6 +1,6 @@
 // @/stores/auth-store.ts
 import api from "@/lib/api-factory";
-import { AuthActions, AuthResponse, AuthState, User } from "@/types";
+import { AuthActions, AuthState, User } from "@/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -32,25 +32,10 @@ export const useAuthStore = create<AuthState & AuthActions>()(
           const res = await api.get<AuthState>("/auth/me"); // or `/auth/verify`
           set({ isAuthenticated: true, user: res.data.user });
         } catch (err) {
-          set({ isAuthenticated: false, user: null });
+          if (!api.isCancel(err)) {
+            set({ isAuthenticated: false, user: null });
+          }
           throw err;
-        } finally {
-          set({ loading: false });
-        }
-      },
-      refreshToken: async () => {
-        set({ loading: true });
-        try {
-          const res =
-            await api.post<AuthResponse<"refreshToken">>("/api/auth/refresh");
-          if (res.status !== 200) throw new Error("Unauthorized");
-
-          set({
-            isAuthenticated: true,
-            user: res.data.user,
-          });
-        } catch (err) {
-          set({ isAuthenticated: false, user: null });
         } finally {
           set({ loading: false });
         }

@@ -21,7 +21,6 @@ export type AuthActions = {
   setUser: (user: User) => void;
   validateToken?: () => boolean;
   verifyToken: () => Promise<void>;
-  refreshToken: () => Promise<void>;
 };
 
 export type AuthResponse<
@@ -29,3 +28,16 @@ export type AuthResponse<
 > = {
   user: User;
 } & Record<K, string>;
+
+export type TokenExpiryUnit = "s" | "m" | "h" | "d";
+export type TokenExpiryFormat = `${number}${TokenExpiryUnit}`; // e.g., "15m", "1h", "2d"
+
+export interface TokenExpiryExtractFormat {
+  value: number;
+  unit: TokenExpiryUnit;
+}
+
+export interface TokenExpiry {
+  accessTokenExpiry: number; // in seconds
+  refreshTokenExpiry: number; // in seconds
+}

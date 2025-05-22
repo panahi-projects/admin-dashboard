@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import api from "@/lib/api-factory";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth-store";
-import { User } from "@/types";
+import { ApiErrorResponse, User } from "@/types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -40,7 +40,9 @@ const LoginForm = ({
     } catch (error: unknown) {
       // Type-safe error handling
       if (api.isError(error)) {
-        setError(error.response?.data?.error || "Login failed");
+        setError(
+          (error.response?.data as ApiErrorResponse)?.error || "Login failed"
+        );
       } else if (error instanceof Error) {
         setError(error.message);
       } else {

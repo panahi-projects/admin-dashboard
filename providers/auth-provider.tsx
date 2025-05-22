@@ -3,40 +3,52 @@
 import { publicRoutes } from "@/configs/public-routes";
 import { useAuthStore } from "@/stores/auth-store";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const pathName = usePathname();
   const router = useRouter();
-  const { isAuthenticated, loading, verifyToken, logout } = useAuthStore();
+  const { isAuthenticated, user, loading, verifyToken, logout } =
+    useAuthStore();
   const [initialCheckComplete, setInitialCheckComplete] = useState(false);
+
+  // 👇 Prevent multiple logouts on re-renders
+  const hasCheckedAuthRef = useRef(false);
 
   useEffect(() => {
     const checkAuth = async () => {
-      if (!useAuthStore.getState().isAuthenticated) return; // 🛑 Skip check if user is not logged in
-      try {
-        await verifyToken();
-      } catch (error) {
-        logout();
-      } finally {
-        // Mark initial check as complete
-        if (!initialCheckComplete) {
-          setInitialCheckComplete(true);
+      // ✅ This block only runs once
+      if (hasCheckedAuthRef.current) return;
+      hasCheckedAuthRef.current = true;
+
+      const store = useAuthStore.getState();
+
+      // 🛑 If Zustand thinks we're not authenticated
+      if (store.isAuthenticated) {
+        try {
+          await verifyToken(); // try to validate cookies (e.g., /auth/me)
+        } catch (error) {
+          await logout(); // cookies expired or invalid → clear client-side auth
         }
       }
+
+      setInitialCheckComplete(true);
     };
 
     checkAuth();
 
-    // Set up periodic token verification (every 5 minutes)
-    const interval = setInterval(checkAuth, 5 * 60 * 1000);
-    return () => clearInterval(interval);
-  }, [verifyToken, logout, initialCheckComplete]);
+    const interval = setInterval(
+      () => {
+        verifyToken().catch(() => logout()); // Periodic re-verification
+      },
+      1 * 60 * 1000
+    );
 
-  // Handle redirects
+    return () => clearInterval(interval);
+  }, [verifyToken, logout]);
+
+  // 🚦Redirect Logic (after initial check only)
   useEffect(() => {
-    debugger;
-    // Only proceed after initial auth check is complete
     if (!initialCheckComplete) return;
 
     const publicPaths = publicRoutes.map((route) => route.path);
@@ -47,7 +59,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (isAuthenticated && pathName.startsWith("/auth")) {
       router.push("/dashboard");
     } else if (!isAuthenticated && !isPublicPath) {
-      // Use replace instead of push to prevent back navigation to protected page
       router.replace(`/auth/login?redirect=${encodeURIComponent(pathName)}`);
     }
   }, [isAuthenticated, pathName, initialCheckComplete, router]);

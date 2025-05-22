@@ -1,7 +1,7 @@
 // @/app/api/users/route.ts
-import { NextResponse } from "next/server";
+import { findUserById } from "@/lib/auth-db-utils";
 import jwt from "jsonwebtoken";
-import { findUserById } from "@/lib/auth-utils";
+import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   try {

@@ -2,9 +2,8 @@
 import { NextResponse } from "next/server";
 import { SignupSchema } from "@/validations/auth-schema";
 import User from "@/models/User";
-import { generateTokens } from "@/lib/auth-utils";
+import { generateTokens, getTokenExpiry } from "@/lib/auth-utils";
 import dbConnect from "@/lib/db-connect";
-import { extractNumber } from "@/utils";
 
 export async function POST(request: Request) {
   await dbConnect();
@@ -31,13 +30,6 @@ export async function POST(request: Request) {
     const user = new User(validatedData);
     await user.save();
 
-    const AccessTokenExpiresIn: number = extractNumber(
-      process.env.ACCESS_TOKEN_EXPIRES_IN || "15m"
-    );
-    const RefreshTokenExpiresIn: number = extractNumber(
-      process.env.REFRESH_TOKEN_EXPIRES_IN || "7d"
-    );
-
     const { accessToken, refreshToken } = generateTokens({
       id: user._id.toString(),
       email: user.email,
@@ -58,7 +50,7 @@ export async function POST(request: Request) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 60 * AccessTokenExpiresIn,
+      maxAge: getTokenExpiry().accessTokenExpiry,
       path: "/",
     });
 
@@ -66,7 +58,7 @@ export async function POST(request: Request) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 60 * 60 * 24 * RefreshTokenExpiresIn,
+      maxAge: getTokenExpiry().refreshTokenExpiry,
       path: "/",
     });
 
