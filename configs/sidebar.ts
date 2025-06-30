@@ -1,16 +1,10 @@
 import { SidebarConfigs } from "@/types";
 import {
-  IconChartBar,
   IconDashboard,
-  IconDatabase,
-  IconFileWord,
-  IconFolder,
   IconHelp,
-  IconListDetails,
   IconReport,
   IconSearch,
   IconSettings,
-  IconUsers,
 } from "@tabler/icons-react";
 import globalConfigs from "./global";
 
@@ -27,26 +21,6 @@ const sidebarConfigs: SidebarConfigs = {
         title: "Dashboard",
         url: "/dashboard",
         icon: IconDashboard,
-      },
-      {
-        title: "Lifecycle",
-        url: "/dashboard/lifecycle",
-        icon: IconListDetails,
-      },
-      {
-        title: "Analytics",
-        url: "/dashboard/analytics",
-        icon: IconChartBar,
-      },
-      {
-        title: "Projects",
-        url: "/dashboard/projects",
-        icon: IconFolder,
-      },
-      {
-        title: "Team",
-        url: "/dashboard/team",
-        icon: IconUsers,
       },
     ],
     navSecondary: [
@@ -68,19 +42,9 @@ const sidebarConfigs: SidebarConfigs = {
     ],
     navDocuments: [
       {
-        title: "Data Library",
-        url: "/dashboard/datalibrary",
-        icon: IconDatabase,
-      },
-      {
         title: "Reports",
         url: "/dashboard/reports",
         icon: IconReport,
-      },
-      {
-        title: "Word Assistant",
-        url: "/dashboard",
-        icon: IconFileWord,
       },
     ],
   },
