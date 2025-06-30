@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "format": "prettier --write --parser typescript '**/*.{ts,tsx}'",
+    "lint": "eslint . --ext .ts,.tsx --fix",
     "prepare": "npm run build",
     "pre-commit": "lint-staged"
   },
@@ -70,8 +71,8 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
+      "npm run format",
+      "npm run lint"
     ],
     "*.{json,css,md}": [
       "prettier --write"
