@@ -160,4 +160,15 @@ describe("ProductService.getProducts()", () => {
     expect(result.data.length).toBe(1);
     expect(result.data[0].sku).toBe("AUDIO-003");
   });
+
+  //#5
+  it("should filter by stock availability", async () => {
+    const inStockResult = await productService.getProducts({ inStock: true });
+    expect(inStockResult.data.length).toBe(3);
+
+    const outOfStockResult = await productService.getProducts({
+      inStock: false,
+    });
+    expect(outOfStockResult.data.length).toBe(1);
+  });
 });
