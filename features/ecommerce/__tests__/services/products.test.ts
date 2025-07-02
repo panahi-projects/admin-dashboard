@@ -150,4 +150,14 @@ describe("ProductService.getProducts()", () => {
     expect(result.data.length).toBe(1);
     expect(result.data[0].name).toContain("Wireless");
   });
+
+  //#4
+  it("should filter by price range", async () => {
+    const result = await productService.getProducts({
+      minPrice: 50,
+      maxPrice: 100,
+    });
+    expect(result.data.length).toBe(1);
+    expect(result.data[0].sku).toBe("AUDIO-003");
+  });
 });
