@@ -128,7 +128,6 @@ describe("ProductService.getProducts()", () => {
   //#1
   it("should return paginated products", async () => {
     const result = await productService.getProducts({}, { page: 1, limit: 2 });
-    console.log("*** result", result);
 
     expect(result.data.length).toBe(2);
     expect(result.total).toBe(4);
@@ -136,5 +135,12 @@ describe("ProductService.getProducts()", () => {
     expect(result.totalPages).toBe(2);
     expect(result.hasNextPage).toBeTruthy();
     expect(result.hasPrevPage).toBeFalsy();
+  });
+
+  //#2
+  it("should filter by category", async () => {
+    const result = await productService.getProducts({ category: "audio" });
+    expect(result.data.length).toBe(3);
+    expect(result.data.every((p) => p.categories.includes("audio"))).toBe(true);
   });
 });

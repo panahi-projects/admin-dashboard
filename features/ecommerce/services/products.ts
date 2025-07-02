@@ -52,7 +52,7 @@ export class ProductService extends BaseFeatureModel<IProduct> {
 
     // Category filter
     if (queryParams.category) {
-      query.category = queryParams.category;
+      query.categories = queryParams.category;
     }
 
     // Stock availability
