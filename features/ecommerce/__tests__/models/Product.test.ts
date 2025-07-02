@@ -1,3 +1,4 @@
+import Product from "@/features/ecommerce/models/Product";
 import mongoose from "mongoose";
 
 beforeAll(async () => {
