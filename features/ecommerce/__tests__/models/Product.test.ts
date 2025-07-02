@@ -1,8 +1,11 @@
 import Product from "@/features/ecommerce/models/Product";
 import mongoose from "mongoose";
 
+if (!process.env.MONGODB_URI) {
+  throw new Error("MONGODB_URI is not defined in environment variables");
+}
 beforeAll(async () => {
-  await mongoose.connect("mongodb://localhost:27017/nextauth");
+  await mongoose.connect(process.env.MONGODB_URI);
 });
 
 afterAll(async () => {
@@ -14,6 +17,7 @@ afterEach(async () => {
 });
 
 describe("Product Model", () => {
+  // #1
   it("should create a new product", async () => {
     const productData = {
       sku: "TSHIRT-RED-M",
@@ -33,6 +37,7 @@ describe("Product Model", () => {
     expect(product.categories).toEqual(["clothing"]);
   });
 
+  //#2
   it("should fails if the categories is empty", async () => {
     const productData = {
       sku: "TSHIRT-RED-M",
@@ -45,5 +50,32 @@ describe("Product Model", () => {
     await expect(Product.create(productData)).rejects.toThrow(
       "At least one category is required"
     );
+  });
+
+  //#3
+  it("should require name, price, and sku", async () => {
+    const productData = {
+      description: "Missing required fields",
+    };
+
+    let error: mongoose.Error.ValidationError;
+    try {
+      await Product.create(productData);
+      fail("Expected validation to fail");
+    } catch (err) {
+      error = err as mongoose.Error.ValidationError;
+    }
+
+    expect(error).toBeDefined();
+    expect(error.name).toBe("ValidationError");
+
+    expect(error.errors.name).toBeDefined();
+    expect(error.errors.name.message).toContain("Product name is required");
+
+    expect(error.errors.price).toBeDefined();
+    expect(error.errors.price.message).toContain("Product price is required");
+
+    expect(error.errors.sku).toBeDefined();
+    expect(error.errors.sku.message).toContain("Product SKU is required");
   });
 });
