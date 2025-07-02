@@ -32,4 +32,18 @@ describe("Product Model", () => {
     expect(product.slug).toBe("t-shirt-red"); // Test slug generation
     expect(product.categories).toEqual(["clothing"]);
   });
+
+  it("should fails if the categories is empty", async () => {
+    const productData = {
+      sku: "TSHIRT-RED-M",
+      name: "T-Shirt Red",
+      price: 99.99,
+      stock: 10,
+      categories: [],
+    };
+
+    await expect(Product.create(productData)).rejects.toThrow(
+      "At least one category is required"
+    );
+  });
 });
