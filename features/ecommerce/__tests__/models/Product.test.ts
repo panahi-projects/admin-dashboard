@@ -102,4 +102,17 @@ describe("Product Model", () => {
       );
     }
   });
+
+  //#5
+  it("should automatically generate slug from name", async () => {
+    const productData = {
+      name: "Test Product With Slug",
+      price: 50,
+      sku: "SLUG123",
+      categories: ["test"],
+    };
+
+    const product = await Product.create(productData);
+    expect(product.slug).toBe("test-product-with-slug");
+  });
 });
