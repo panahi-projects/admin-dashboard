@@ -18,10 +18,21 @@ export interface IProduct extends Document {
 
 const ProductSchema = new mongoose.Schema<IProduct>(
   {
-    name: { type: String, required: true },
+    name: {
+      type: String,
+      required: [true, "Product name is required"],
+    },
     slug: { type: String, unique: true },
-    price: { type: Number, required: true, min: 0 },
-    sku: { type: String, required: true, unique: true },
+    price: {
+      type: Number,
+      required: [true, "Product price is required"],
+      min: 0,
+    },
+    sku: {
+      type: String,
+      required: [true, "Product SKU is required"],
+      unique: true,
+    },
     description: { type: String },
     stock: { type: Number, default: 0, min: 0 },
     images: {
