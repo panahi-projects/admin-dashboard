@@ -32,6 +32,10 @@ describe("Product Service", () => {
 
     const product = await productService.createProduct(productData);
 
+    if (!product) {
+      throw new Error("Product creation failed");
+    }
+
     expect(product).toHaveProperty("_id");
     expect(product.name).toBe(productData.name);
     expect(product.slug).toBeDefined();
@@ -54,5 +58,30 @@ describe("Product Service", () => {
         name: "Different Name",
       })
     ).rejects.toThrow("The SKU has already been used");
+  });
+
+  //#3
+  it("should return product by Id", async () => {
+    const productData = {
+      name: "Test Product",
+      price: 99.99,
+      sku: "DUPLICATE123",
+      categories: ["test"],
+    };
+
+    const product = await productService.createProduct(productData);
+
+    if (!product) {
+      throw new Error("Product creation failed");
+    }
+
+    expect(product).toHaveProperty("_id");
+    const productId = product._id as string;
+
+    const foundProduct = await productService.getProductById(productId);
+
+    expect(foundProduct).toBeDefined();
+    expect(foundProduct?.name).toBe(productData.name);
+    expect(foundProduct?.sku).toBe(productData.sku);
   });
 });
