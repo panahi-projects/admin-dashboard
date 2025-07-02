@@ -17,7 +17,7 @@ afterEach(async () => {
 });
 
 describe("Product Model", () => {
-  // #1
+  //#1
   it("should create a new product", async () => {
     const productData = {
       sku: "TSHIRT-RED-M",
@@ -77,5 +77,29 @@ describe("Product Model", () => {
 
     expect(error.errors.sku).toBeDefined();
     expect(error.errors.sku.message).toContain("Product SKU is required");
+  });
+
+  //#4
+  it("should validate all required fields and business rules", async () => {
+    const testCases = [
+      {
+        data: { name: "Test", price: -10, sku: "TEST" }, // Negative price
+        expectedError: "Price cannot be negative",
+      },
+      {
+        data: { name: "", price: 10, sku: "TEST" }, // Empty name
+        expectedError: "Product name is required",
+      },
+      {
+        data: { name: "Test", price: 10, sku: "A" }, // SKU too short
+        expectedError: "SKU must be at least 3 characters",
+      },
+    ];
+
+    for (const testCase of testCases) {
+      await expect(Product.create(testCase.data)).rejects.toThrow(
+        testCase.expectedError
+      );
+    }
   });
 });
