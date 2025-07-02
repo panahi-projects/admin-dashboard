@@ -9,7 +9,10 @@
     "format": "prettier --write --parser typescript '**/*.{ts,tsx}'",
     "lint": "eslint . --ext .ts,.tsx --fix",
     "prepare": "npm run build",
-    "pre-commit": "lint-staged"
+    "pre-commit": "lint-staged",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -44,6 +47,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "recharts": "^2.15.3",
+    "slugify": "^1.6.6",
     "sonner": "^2.0.3",
     "tailwind-merge": "^3.2.0",
     "vaul": "^1.1.2",
@@ -52,6 +56,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@swc/jest": "^0.2.38",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -68,8 +73,11 @@
     "eslint-plugin-prettier": "^5.2.6",
     "husky": "^9.1.7",
     "jest": "^30.0.3",
+    "jest-environment-jsdom": "^30.0.2",
     "lint-staged": "^16.1.2",
+    "mongodb-memory-server": "^10.1.4",
     "msw": "^2.10.2",
+    "node-mocks-http": "^1.17.2",
     "prettier": "^3.5.3",
     "tailwindcss": "^4",
     "ts-jest": "^29.4.0",
