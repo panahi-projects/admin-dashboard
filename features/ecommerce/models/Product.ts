@@ -31,7 +31,7 @@ const ProductSchema = new mongoose.Schema<IProduct>(
     sku: {
       type: String,
       required: [true, "Product SKU is required"],
-      unique: true,
+      unique: [true, "The SKU has already been used"],
       minlength: [3, "SKU must be at least 3 characters"],
     },
     description: { type: String },

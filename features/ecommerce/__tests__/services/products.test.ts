@@ -36,4 +36,23 @@ describe("Product Service", () => {
     expect(product.name).toBe(productData.name);
     expect(product.slug).toBeDefined();
   });
+
+  //#2
+  it("should throw error for duplicate SKU", async () => {
+    const productData = {
+      name: "Test Product",
+      price: 99.99,
+      sku: "DUPLICATE123",
+      categories: ["test"],
+    };
+
+    await productService.createProduct(productData);
+
+    await expect(
+      productService.createProduct({
+        ...productData,
+        name: "Different Name",
+      })
+    ).rejects.toThrow("The SKU has already been used");
+  });
 });
