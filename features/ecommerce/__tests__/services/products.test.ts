@@ -171,4 +171,28 @@ describe("ProductService.getProducts()", () => {
     });
     expect(outOfStockResult.data.length).toBe(1);
   });
+
+  //#6
+  it("should return lean objects with string _id when requested", async () => {
+    // First create a test product
+    await Product.create({
+      name: "Test Product",
+      price: 99.99,
+      sku: "TEST-LEAN-1",
+      categories: ["Test"],
+      stock: 10,
+    });
+
+    const result = await productService.getProducts({}, { lean: true });
+
+    // Verify it's a plain object
+    expect(result.data[0]).not.toHaveProperty("$isMongooseModelPrototype");
+
+    // Verify _id is now a string
+    expect(typeof result.data[0]._id).toBe("string");
+
+    // Verify other fields are present
+    expect(result.data[0].name).toBe("Test Product");
+    expect(result.data[0].price).toBe(99.99);
+  });
 });
