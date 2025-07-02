@@ -143,4 +143,11 @@ describe("ProductService.getProducts()", () => {
     expect(result.data.length).toBe(3);
     expect(result.data.every((p) => p.categories.includes("audio"))).toBe(true);
   });
+
+  //#3
+  it("should search by text", async () => {
+    const result = await productService.getProducts({ search: "wireless" });
+    expect(result.data.length).toBe(1);
+    expect(result.data[0].name).toContain("Wireless");
+  });
 });
