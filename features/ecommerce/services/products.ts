@@ -13,6 +13,10 @@ export class ProductService extends BaseFeatureModel<IProduct> {
   async createProduct(data: ProductCreateInput): Promise<IProduct> {
     return this.create(data);
   }
+
+  async getProductById(id: string): Promise<IProduct | null> {
+    return this.findById(id);
+  }
 }
 
 export const productService = new ProductService();
