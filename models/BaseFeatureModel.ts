@@ -43,8 +43,21 @@ export class BaseFeatureModel<T extends Document> {
       .limit(limit)
       .populate(populate || "");
 
+    // Apply lean transformation if needed
+    if (lean) {
+      queryBuilder.lean({
+        transform: (doc: any) => {
+          if (doc?._id && mongoose.isValidObjectId(doc._id)) {
+            doc._id = doc._id.toString();
+          }
+          return doc;
+        },
+      });
+    }
+
+    // Execute queries
     const [data, total] = await Promise.all([
-      lean ? queryBuilder.lean() : queryBuilder.exec(),
+      queryBuilder.exec(),
       this.model.countDocuments(query),
     ]);
 
