@@ -85,3 +85,56 @@ describe("Product Service", () => {
     expect(foundProduct?.sku).toBe(productData.sku);
   });
 });
+
+describe("ProductService.getProducts()", () => {
+  const productService = new ProductService();
+  beforeEach(async () => {
+    await Product.deleteMany({});
+    // Seed test data
+    await Product.create([
+      {
+        name: "Premium Wireless Headphones",
+        price: 299.99,
+        sku: "AUDIO-001",
+        stock: 50,
+        description: "High-quality wireless headphones with noise cancellation",
+        categories: ["electronics", "gadget", "mobile-accessories", "audio"],
+      },
+      {
+        name: "Budget Wired Earbuds",
+        price: 19.99,
+        sku: "AUDIO-002",
+        stock: 0,
+        description: "Affordable wired earbuds",
+        categories: ["electronics", "gadget", "mobile-accessories", "audio"],
+      },
+      {
+        name: "Bluetooth Speaker",
+        price: 89.99,
+        sku: "AUDIO-003",
+        stock: 25,
+        categories: ["electronics", "gadget", "audio"],
+      },
+      {
+        name: "Smartphone X",
+        price: 799.99,
+        sku: "PHONE-001",
+        stock: 10,
+        categories: ["electronics", "mobile"],
+      },
+    ]);
+  });
+
+  //#1
+  it("should return paginated products", async () => {
+    const result = await productService.getProducts({}, { page: 1, limit: 2 });
+    console.log("*** result", result);
+
+    expect(result.data.length).toBe(2);
+    expect(result.total).toBe(4);
+    expect(result.page).toBe(1);
+    expect(result.totalPages).toBe(2);
+    expect(result.hasNextPage).toBeTruthy();
+    expect(result.hasPrevPage).toBeFalsy();
+  });
+});
