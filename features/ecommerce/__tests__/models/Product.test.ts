@@ -83,15 +83,15 @@ describe("Product Model", () => {
   it("should validate all required fields and business rules", async () => {
     const testCases = [
       {
-        data: { name: "Test", price: -10, sku: "TEST" }, // Negative price
+        data: { name: "Test", price: -10, sku: "TEST", categories: ["test"] }, // Negative price
         expectedError: "Price cannot be negative",
       },
       {
-        data: { name: "", price: 10, sku: "TEST" }, // Empty name
+        data: { name: "", price: 10, sku: "TEST", categories: ["test"] }, // Empty name
         expectedError: "Product name is required",
       },
       {
-        data: { name: "Test", price: 10, sku: "A" }, // SKU too short
+        data: { name: "Test", price: 10, sku: "A", categories: ["test"] }, // SKU too short
         expectedError: "SKU must be at least 3 characters",
       },
     ];

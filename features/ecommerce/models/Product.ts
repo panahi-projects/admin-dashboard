@@ -26,12 +26,13 @@ const ProductSchema = new mongoose.Schema<IProduct>(
     price: {
       type: Number,
       required: [true, "Product price is required"],
-      min: 0,
+      min: [0, "Price cannot be negative"],
     },
     sku: {
       type: String,
       required: [true, "Product SKU is required"],
       unique: true,
+      minlength: [3, "SKU must be at least 3 characters"],
     },
     description: { type: String },
     stock: { type: Number, default: 0, min: 0 },
