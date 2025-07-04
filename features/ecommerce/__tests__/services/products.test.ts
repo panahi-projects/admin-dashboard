@@ -226,4 +226,13 @@ describe("ProductService finds functionality", () => {
     });
     expect(product).toBeNull();
   });
+
+  //#10
+  it("should find product by price range", async () => {
+    const product = await productService.getProductByQuery({
+      minPrice: 50,
+      maxPrice: 100,
+    });
+    expect(product?.sku).toBe("AUDIO-003");
+  });
 });
