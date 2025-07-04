@@ -86,7 +86,7 @@ describe("Product Service", () => {
   });
 });
 
-describe("ProductService.getProducts()", () => {
+describe("ProductService finds functionality", () => {
   const productService = new ProductService();
   beforeEach(async () => {
     await Product.deleteMany({});
@@ -125,6 +125,7 @@ describe("ProductService.getProducts()", () => {
     ]);
   });
 
+  //FindAll:
   //#1
   it("should return paginated products", async () => {
     const result = await productService.getProducts({}, { page: 1, limit: 2 });
@@ -194,5 +195,17 @@ describe("ProductService.getProducts()", () => {
     // Verify other fields are present
     expect(result.data[0].name).toBe("Test Product");
     expect(result.data[0].price).toBe(99.99);
+  });
+
+  //FindOne:
+  //#7
+  it("should find product by exact SKU", async () => {
+    const product = await productService.getProductByQuery({
+      sku: "PHONE-001",
+    });
+
+    expect(product).toBeDefined();
+    expect(product?.name).toBe("Smartphone X");
+    expect(product?.price).toBe(799.99);
   });
 });

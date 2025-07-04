@@ -21,6 +21,13 @@ export class ProductService extends BaseFeatureModel<IProduct> {
     return this.findById(id);
   }
 
+  // Get single product by various query criteria
+  async getProductByQuery(query: ProductQueryParams): Promise<IProduct | null> {
+    const queryBuilder: FilterQuery<IProduct> = {};
+
+    return this.findOne(queryBuilder);
+  }
+
   async getProducts(
     queryParams: ProductQueryParams = {},
     paginationOptions: ProductPaginationOptions = {}
