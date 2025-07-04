@@ -199,7 +199,7 @@ describe("ProductService finds functionality", () => {
 
   //FindOne:
   //#7
-  it("should find product by exact SKU", async () => {
+  it("should find a product by exact SKU", async () => {
     const product = await productService.getProductByQuery({
       sku: "PHONE-001",
     });
@@ -207,5 +207,14 @@ describe("ProductService finds functionality", () => {
     expect(product).toBeDefined();
     expect(product?.name).toBe("Smartphone X");
     expect(product?.price).toBe(799.99);
+  });
+
+  it("should find a product by name regex", async () => {
+    const product = await productService.getProductByQuery({
+      name: "Smartphone",
+    });
+
+    expect(product).toBeDefined();
+    expect(product?.sku).toBe("PHONE-001");
   });
 });
