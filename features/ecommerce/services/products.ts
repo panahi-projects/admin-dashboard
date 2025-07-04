@@ -106,7 +106,7 @@ export class ProductService extends BaseFeatureModel<IProduct> {
     id: string,
     data: ProductPartialInput
   ): Promise<IProduct | null> {
-    return null;
+    return this.updateById(id, data) || null;
   }
 }
 

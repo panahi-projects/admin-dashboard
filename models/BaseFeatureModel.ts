@@ -71,4 +71,11 @@ export class BaseFeatureModel<T extends Document> {
       hasPrevPage: page > 1,
     };
   }
+
+  // UPDATE - Full update
+  async updateById(id: string, data: Partial<T>): Promise<T | null> {
+    return this.model
+      .findByIdAndUpdate(id, data, { new: true, runValidators: true })
+      .exec();
+  }
 }
