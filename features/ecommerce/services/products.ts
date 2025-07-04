@@ -29,6 +29,10 @@ export class ProductService extends BaseFeatureModel<IProduct> {
       queryBuilder.sku = query.sku;
     }
 
+    if (query?.name) {
+      queryBuilder.name = { $regex: query.name, $options: "i" };
+    }
+
     return this.findOne(queryBuilder);
   }
 

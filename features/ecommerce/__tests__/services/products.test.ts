@@ -211,7 +211,7 @@ describe("ProductService finds functionality", () => {
 
   it("should find a product by name regex", async () => {
     const product = await productService.getProductByQuery({
-      name: "Smartphone",
+      name: "smartphone",
     });
 
     expect(product).toBeDefined();
