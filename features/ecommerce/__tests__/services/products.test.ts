@@ -228,11 +228,24 @@ describe("ProductService finds functionality", () => {
   });
 
   //#10
-  it("should find product by price range", async () => {
+  it("should find a product by price range", async () => {
     const product = await productService.getProductByQuery({
       minPrice: 50,
       maxPrice: 100,
     });
     expect(product?.sku).toBe("AUDIO-003");
+  });
+
+  //#11
+  it("should find a product by in-stock", async () => {
+    const productInStock = await productService.getProductByQuery({
+      inStock: true,
+    });
+    expect(productInStock?.stock).toBeGreaterThan(0);
+
+    const productNotInStock = await productService.getProductByQuery({
+      inStock: false,
+    });
+    expect(productNotInStock?.stock).toEqual(0);
   });
 });
