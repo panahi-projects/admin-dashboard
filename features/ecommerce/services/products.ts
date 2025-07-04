@@ -33,6 +33,16 @@ export class ProductService extends BaseFeatureModel<IProduct> {
       queryBuilder.name = { $regex: query.name, $options: "i" };
     }
 
+    if (query.minPrice !== undefined || query.maxPrice !== undefined) {
+      queryBuilder.price = {};
+      if (query.minPrice !== undefined) {
+        queryBuilder.price.$gte = query.minPrice;
+      }
+      if (query.maxPrice !== undefined) {
+        queryBuilder.price.$lte = query.maxPrice;
+      }
+    }
+
     return this.findOne(queryBuilder);
   }
 
