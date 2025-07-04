@@ -46,13 +46,20 @@ const ProductSchema = new mongoose.Schema<IProduct>(
     categories: {
       type: [String],
       default: [],
-      validate: {
-        validator: function (categories: string[]) {
-          // At least one category required
-          return categories.length > 0;
+      validate: [
+        {
+          validator: function (categories: string[]) {
+            return categories.length > 0;
+          },
+          message: "At least one category is required",
         },
-        message: "At least one category is required",
-      },
+        {
+          validator: function (categories: string[]) {
+            return !categories.some((category) => category.trim() === "");
+          },
+          message: "Categories cannot contain empty strings",
+        },
+      ],
     },
     isActive: { type: Boolean, default: true },
   },

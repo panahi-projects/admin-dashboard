@@ -1,4 +1,4 @@
-import Product from "@/features/ecommerce/models/Product";
+import Product, { IProduct } from "@/features/ecommerce/models/Product";
 import { ProductService } from "@/features/ecommerce/services/products";
 import mongoose from "mongoose";
 
@@ -86,34 +86,31 @@ describe("Product Service", () => {
   });
 
   //#4
-  it("should full update a product by ID", async () => {
-    const productData = {
-      sku: "TSHIRT-RED-M",
-      name: "T-Shirt Red",
-      price: 99.99,
-      stock: 10,
-      categories: ["clothing"],
-    };
+  it("should validate all required fields and business rules for createProduct", async () => {
+    const testCases = [
+      {
+        data: { name: "Test", price: -10, sku: "TEST", categories: ["test"] }, // Negative price
+        expectedError: "Price cannot be negative",
+      },
+      {
+        data: { name: "", price: 10, sku: "TEST", categories: ["test"] }, // Empty name
+        expectedError: "Product name is required",
+      },
+      {
+        data: { name: "Test", price: 10, sku: "A", categories: ["test"] }, // SKU too short
+        expectedError: "SKU must be at least 3 characters",
+      },
+      {
+        data: { name: "Test", price: 10, sku: "ABC", categories: [""] }, // Categories is empty
+        expectedError: "Categories cannot contain empty strings",
+      },
+    ];
 
-    const product = await productService.createProduct(productData);
-
-    if (!product) {
-      throw new Error("Product creation failed");
+    for (const testCase of testCases) {
+      await expect(productService.createProduct(testCase.data)).rejects.toThrow(
+        testCase.expectedError
+      );
     }
-
-    //update product:
-    const updatedProduct = await productService.updateProductById(product.id, {
-      sku: "TSHIRT-BLUE-L",
-      name: "T-Shirt Blue",
-      price: 79,
-      stock: 5,
-      categories: ["clothing"],
-    });
-
-    expect(updatedProduct).toBeDefined();
-    expect(updatedProduct?.sku).toBe("TSHIRT-BLUE-L");
-    expect(updatedProduct?.name).toBe("T-Shirt Blue");
-    expect(updatedProduct?.price).toBe(79);
   });
 });
 
@@ -314,5 +311,41 @@ describe("ProductService finds functionality", () => {
       inStock: true,
     });
     expect(product?.sku).toBe("AUDIO-001"); // Only the headphones match all criteria
+  });
+});
+
+describe("ProductService update", () => {
+  const productService = new ProductService();
+  let product: IProduct;
+
+  beforeEach(async () => {
+    const productData = {
+      sku: "TSHIRT-RED-M",
+      name: "T-Shirt Red",
+      price: 99.99,
+      stock: 10,
+      categories: ["clothing"],
+    };
+
+    product = await productService.createProduct(productData);
+
+    if (!product) {
+      throw new Error("Product creation failed");
+    }
+  });
+  //#1
+  it("should full update a product by ID", async () => {
+    const updatedProduct = await productService.updateProductById(product.id, {
+      sku: "TSHIRT-BLUE-L",
+      name: "T-Shirt Blue",
+      price: 79,
+      stock: 5,
+      categories: ["clothing"],
+    });
+
+    expect(updatedProduct).toBeDefined();
+    expect(updatedProduct?.sku).toBe("TSHIRT-BLUE-L");
+    expect(updatedProduct?.name).toBe("T-Shirt Blue");
+    expect(updatedProduct?.price).toBe(79);
   });
 });
