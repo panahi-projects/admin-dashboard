@@ -209,6 +209,7 @@ describe("ProductService finds functionality", () => {
     expect(product?.price).toBe(799.99);
   });
 
+  //#8
   it("should find a product by name regex", async () => {
     const product = await productService.getProductByQuery({
       name: "smartphone",
@@ -216,5 +217,13 @@ describe("ProductService finds functionality", () => {
 
     expect(product).toBeDefined();
     expect(product?.sku).toBe("PHONE-001");
+  });
+
+  //#9
+  it("should return null when no product matches", async () => {
+    const product = await productService.getProductByQuery({
+      sku: "NON-EXISTENT",
+    });
+    expect(product).toBeNull();
   });
 });
