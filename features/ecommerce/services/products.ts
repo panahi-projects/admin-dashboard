@@ -43,6 +43,14 @@ export class ProductService extends BaseFeatureModel<IProduct> {
       }
     }
 
+    if (query.category) {
+      queryBuilder.categories = query.category;
+    }
+
+    if (query.inStock !== undefined) {
+      queryBuilder.stock = query.inStock ? { $gt: 0 } : { $lte: 0 };
+    }
+
     return this.findOne(queryBuilder);
   }
 

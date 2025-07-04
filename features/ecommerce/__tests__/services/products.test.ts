@@ -248,4 +248,14 @@ describe("ProductService finds functionality", () => {
     });
     expect(productNotInStock?.stock).toEqual(0);
   });
+
+  //#12
+  it("should combine multiple query criteria", async () => {
+    const product = await productService.getProductByQuery({
+      category: "audio",
+      minPrice: 20,
+      inStock: true,
+    });
+    expect(product?.sku).toBe("AUDIO-001"); // Only the headphones match all criteria
+  });
 });
