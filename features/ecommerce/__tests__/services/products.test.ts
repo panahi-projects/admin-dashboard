@@ -84,6 +84,37 @@ describe("Product Service", () => {
     expect(foundProduct?.name).toBe(productData.name);
     expect(foundProduct?.sku).toBe(productData.sku);
   });
+
+  //#4
+  it("should full update a product by ID", async () => {
+    const productData = {
+      sku: "TSHIRT-RED-M",
+      name: "T-Shirt Red",
+      price: 99.99,
+      stock: 10,
+      categories: ["clothing"],
+    };
+
+    const product = await productService.createProduct(productData);
+
+    if (!product) {
+      throw new Error("Product creation failed");
+    }
+
+    //update product:
+    const updatedProduct = await productService.updateProductById(product.id, {
+      sku: "TSHIRT-BLUE-L",
+      name: "T-Shirt Blue",
+      price: 79,
+      stock: 5,
+      categories: ["clothing"],
+    });
+
+    expect(updatedProduct).toBeDefined();
+    expect(updatedProduct?.sku).toBe("TSHIRT-BLUE-L");
+    expect(updatedProduct?.name).toBe("T-Shirt Blue");
+    expect(updatedProduct?.price).toBe(79);
+  });
 });
 
 describe("ProductService finds functionality", () => {

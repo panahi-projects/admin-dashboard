@@ -101,6 +101,13 @@ export class ProductService extends BaseFeatureModel<IProduct> {
       lean: paginationOptions.lean || false,
     });
   }
+
+  async updateProductById(
+    id: string,
+    data: ProductPartialInput
+  ): Promise<IProduct | null> {
+    return null;
+  }
 }
 
 export const productService = new ProductService();
