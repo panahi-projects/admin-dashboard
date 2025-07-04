@@ -25,6 +25,10 @@ export class ProductService extends BaseFeatureModel<IProduct> {
   async getProductByQuery(query: ProductQueryParams): Promise<IProduct | null> {
     const queryBuilder: FilterQuery<IProduct> = {};
 
+    if (query?.sku) {
+      queryBuilder.sku = query.sku;
+    }
+
     return this.findOne(queryBuilder);
   }
 

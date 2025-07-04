@@ -2,6 +2,8 @@ import { IProduct } from "@/features/ecommerce/models/Product";
 
 // Product query/filtering params (e.g., for API requests)
 export interface ProductQueryParams {
+  sku?: string;
+  name?: string;
   search?: string;
   minPrice?: number;
   maxPrice?: number;
