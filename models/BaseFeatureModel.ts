@@ -72,10 +72,50 @@ export class BaseFeatureModel<T extends Document> {
     };
   }
 
-  // UPDATE - Full update
+  // UPDATE - Full update (replaces entire document)
   async updateById(id: string, data: Partial<T>): Promise<T | null> {
+    // First get the existing document
+    const existing = await this.model.findById(id).exec();
+    if (!existing) return null;
+
+    // Create a new document with merged data
+    const updatedDoc = existing.set(data);
+
+    // Explicitly check for undefined required fields
+    const schema = this.model.schema;
+    const requiredPaths = Object.keys(schema.paths).filter(
+      (path) => schema.paths[path].isRequired
+    );
+
+    for (const path of requiredPaths) {
+      // Type-safe way to check if the field exists in the data
+      if (data[path as keyof Partial<T>] === undefined) {
+        throw new Error(`Field "${path}" is required`);
+      }
+    }
+
+    // Validate before saving
+    await updatedDoc.validate();
+
+    // Save the changes
+    return updatedDoc.save();
+  }
+
+  // UPDATE - Partial update (only updates specified fields)
+  async patchById(id: string, data: Partial<T>): Promise<T | null> {
+    // For partial updates, we'll let Mongoose handle the validation
+    // of only the fields that are being updated
     return this.model
-      .findByIdAndUpdate(id, data, { new: true, runValidators: true })
+      .findByIdAndUpdate(
+        id,
+        { $set: data },
+        {
+          new: true,
+          runValidators: true,
+          context: "query",
+          setDefaultsOnInsert: false,
+        }
+      )
       .exec();
   }
 }

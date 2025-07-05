@@ -104,6 +104,14 @@ describe("Product Service", () => {
         data: { name: "Test", price: 10, sku: "ABC", categories: [""] }, // Categories is empty
         expectedError: "Categories cannot contain empty strings",
       },
+      {
+        data: { name: "Test", price: 10, sku: "ABC", categories: [] }, // Categories is empty array
+        expectedError: "At least one category is required",
+      },
+      {
+        data: { name: "Test", price: 10, sku: "ABC" }, // Categories is not sent
+        expectedError: "At least one category is required",
+      },
     ];
 
     for (const testCase of testCases) {
@@ -333,6 +341,7 @@ describe("ProductService update", () => {
       throw new Error("Product creation failed");
     }
   });
+
   //#1
   it("should full update a product by ID", async () => {
     const updatedProduct = await productService.updateProductById(product.id, {
@@ -347,5 +356,43 @@ describe("ProductService update", () => {
     expect(updatedProduct?.sku).toBe("TSHIRT-BLUE-L");
     expect(updatedProduct?.name).toBe("T-Shirt Blue");
     expect(updatedProduct?.price).toBe(79);
+  });
+
+  //#2
+  it("should throw error if required fields are not sent for update", async () => {
+    const testCases = [
+      {
+        data: { name: "Test", price: -10, sku: "TEST", categories: ["test"] }, // Negative price
+        expectedError: "Price cannot be negative",
+      },
+      {
+        data: { name: "", price: 10, sku: "TEST", categories: ["test"] }, // Empty name
+        expectedError: "Product name is required",
+      },
+      {
+        data: { name: "Test", price: 10, sku: "A", categories: ["test"] }, // SKU too short
+        expectedError: "SKU must be at least 3 characters",
+      },
+      {
+        data: { name: "Test", price: 10, sku: "ABC", categories: [""] }, // Categories is empty
+        expectedError: "Categories cannot contain empty strings",
+      },
+      {
+        data: { name: "Test", price: 10, sku: "ABC", categories: [] }, // Categories is empty array
+        expectedError: "At least one category is required",
+      },
+      {
+        data: { price: 10, sku: "ABC" }, // name & categories are not sent
+        expectedError: "Missing required fields: name, categories",
+      },
+    ];
+
+    for (const testCase of testCases) {
+      await expect(
+        productService.updateProductById(product.id, testCase.data, {
+          fullUpdate: true,
+        })
+      ).rejects.toThrow(testCase.expectedError);
+    }
   });
 });

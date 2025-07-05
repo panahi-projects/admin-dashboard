@@ -104,9 +104,28 @@ export class ProductService extends BaseFeatureModel<IProduct> {
 
   async updateProductById(
     id: string,
-    data: ProductPartialInput
+    data: ProductPartialInput,
+    options: { fullUpdate?: boolean } = {}
   ): Promise<IProduct | null> {
-    return this.updateById(id, data) || null;
+    if (options.fullUpdate) {
+      // For full updates, ensure required fields are present
+      const requiredFields: (keyof IProduct)[] = [
+        "name",
+        "price",
+        "sku",
+        "categories",
+      ];
+      const missingFields = requiredFields.filter(
+        (field) => (data as any)[field] === undefined
+      );
+
+      if (missingFields.length > 0) {
+        throw new Error(`Missing required fields: ${missingFields.join(", ")}`);
+      }
+
+      return this.updateById(id, data);
+    }
+    return this.patchById(id, data);
   }
 }
 
